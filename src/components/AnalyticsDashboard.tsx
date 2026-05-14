@@ -5,6 +5,7 @@ import {
   PieChart, Pie, Cell, Legend,
   BarChart, Bar
 } from 'recharts';
+import { Glasses, CircleDashed } from 'lucide-react';
 
 interface AnalyticsDashboardProps {
   inventory: Product[];
@@ -16,12 +17,13 @@ const COLORS = ['#3b82f6', '#8b5cf6', '#ec4899', '#f43f5e', '#f59e0b', '#10b981'
 export default function AnalyticsDashboard({ inventory, completedSales }: AnalyticsDashboardProps) {
 
   // Process KPIs
-  const { todaySalesTotal, todayItemsSold, dailySalesTrend, salesByBrand, inventoryByBrand } = useMemo(() => {
+  const { todaySalesTotal, todayFramesSold, todayLensesSold, dailySalesTrend, salesByBrand, inventoryByBrand } = useMemo(() => {
     const now = new Date();
     const todayStr = now.toISOString().split('T')[0];
     
     let todayTotal = 0;
-    let todayItems = 0;
+    let framesSold = 0;
+    let lensesSold = 0;
     
     // For last 7 days trend
     const last7Days: Record<string, number> = {};
@@ -39,7 +41,10 @@ export default function AnalyticsDashboard({ inventory, completedSales }: Analyt
       // Keep track of today
       if (saleDateStr === todayStr) {
         todayTotal += sale.total;
-        sale.items.forEach(item => todayItems += item.quantity);
+        sale.items.forEach(item => {
+          if (item.category === 'FRAME') framesSold += item.quantity;
+          if (item.category === 'LENS') lensesSold += item.quantity;
+        });
       }
       
       // Update 7-day trend if in range
@@ -82,7 +87,8 @@ export default function AnalyticsDashboard({ inventory, completedSales }: Analyt
 
     return { 
       todaySalesTotal: todayTotal, 
-      todayItemsSold: todayItems,
+      todayFramesSold: framesSold,
+      todayLensesSold: lensesSold,
       dailySalesTrend: trendData,
       salesByBrand: pieData,
       inventoryByBrand: barData
@@ -98,15 +104,28 @@ export default function AnalyticsDashboard({ inventory, completedSales }: Analyt
 
       <div className="flex flex-col gap-6 p-4 sm:p-6">
         
-        {/* KPI Cards */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="flex flex-col rounded-2xl bg-white/5 border border-white/10 p-5 shadow-sm backdrop-blur-md">
-            <span className="text-sm font-medium text-slate-400">Today's Sales</span>
-            <span className="text-2xl font-bold text-green-400 mt-1">${todaySalesTotal.toFixed(2)}</span>
+        {/* KPI Cards: Today Snapshot */}
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col rounded-2xl bg-gradient-to-br from-blue-900/40 to-blue-600/10 border border-blue-500/20 p-6 shadow-lg backdrop-blur-md">
+            <span className="text-sm font-medium text-blue-200">Today's Revenue</span>
+            <span className="text-4xl font-bold text-white mt-2">${todaySalesTotal.toFixed(2)}</span>
           </div>
-          <div className="flex flex-col rounded-2xl bg-white/5 border border-white/10 p-5 shadow-sm backdrop-blur-md">
-            <span className="text-sm font-medium text-slate-400">Items Sold Today</span>
-            <span className="text-2xl font-bold text-blue-400 mt-1">{todayItemsSold}</span>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col rounded-2xl bg-white/5 border border-white/10 p-5 shadow-sm backdrop-blur-md">
+              <div className="flex items-center gap-2 mb-2">
+                <Glasses className="h-5 w-5 text-indigo-400" />
+                <span className="text-sm font-medium text-slate-400">Frames Sold</span>
+              </div>
+              <span className="text-2xl font-bold text-indigo-400">{todayFramesSold}</span>
+            </div>
+            <div className="flex flex-col rounded-2xl bg-white/5 border border-white/10 p-5 shadow-sm backdrop-blur-md">
+              <div className="flex items-center gap-2 mb-2">
+                <CircleDashed className="h-5 w-5 text-emerald-400" />
+                <span className="text-sm font-medium text-slate-400">Lenses Sold</span>
+              </div>
+              <span className="text-2xl font-bold text-emerald-400">{todayLensesSold}</span>
+            </div>
           </div>
         </div>
 
