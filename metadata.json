@@ -1,0 +1,10 @@
+{
+  "name": "Mobile POS Scanner",
+  "description": "Mobile-first POS app using native camera to scan QR codes for product checkout.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
