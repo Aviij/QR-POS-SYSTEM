@@ -46,7 +46,23 @@ export default function App() {
       setIsScannerOpen(false);
       return true;
     } else {
-      setToastMessage('Unknown Product Code');
+      setToastMessage(`QR Code [${decodedText}] not found in Inventory!`);
+      try {
+        const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+        if (AudioContext) {
+            const ctx = new AudioContext();
+            const osc = ctx.createOscillator();
+            const gainNode = ctx.createGain();
+            osc.frequency.setValueAtTime(400, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.3);
+            gainNode.gain.setValueAtTime(0.5, ctx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+            osc.connect(gainNode);
+            gainNode.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.3);
+        }
+      } catch (e) {}
       setTimeout(() => setToastMessage(null), 3000);
       return false;
     }
@@ -84,8 +100,8 @@ export default function App() {
   };
 
   return (
-    <div className="relative flex h-screen w-full flex-col overflow-hidden bg-slate-950">
-      <div className="flex-1 overflow-hidden pb-[80px]"> 
+    <div className="relative flex min-h-[100dvh] w-full flex-col overflow-hidden bg-slate-950">
+      <div className="flex-1 overflow-hidden"> 
         {activeTab === 'POS' ? (
           <SalesDashboard 
             cart={cart}
@@ -116,7 +132,7 @@ export default function App() {
       )}
 
       {/* Bottom Tab Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex h-[80px] w-full items-center justify-around border-t border-white/10 bg-slate-900/80 backdrop-blur-xl supports-[backdrop-filter]:bg-slate-950/60 pb-safe">
+      <div className="fixed bottom-0 left-0 right-0 z-40 flex h-[80px] w-full items-center justify-around border-t border-white/10 bg-slate-900/80 backdrop-blur-xl supports-[backdrop-filter]:bg-slate-950/60 pb-safe">
         <button 
           onClick={() => setActiveTab('POS')}
           className={`flex flex-col items-center justify-center w-full h-full gap-1 ${activeTab === 'POS' ? 'text-blue-400' : 'text-slate-400'}`}

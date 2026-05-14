@@ -69,7 +69,7 @@ export default function ScannerModal({ onClose, onScanSuccess }: ScannerModalPro
   }, [onScanSuccess]);
 
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col bg-black">
+    <div className="fixed inset-0 z-[999] flex flex-col bg-black">
       {/* Header */}
       <div className="absolute top-0 left-0 right-0 z-10 flex justify-end p-6">
         <button 

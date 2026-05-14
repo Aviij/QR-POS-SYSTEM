@@ -23,7 +23,7 @@ export default function SalesDashboard({ cart, onCartUpdate, onOpenScanner, onMa
   };
 
   return (
-    <div className="flex h-full w-full flex-col bg-slate-950 text-white relative">
+    <div className="flex h-full w-full flex-col bg-slate-950 text-white relative z-[1] pb-[100px]">
       {/* Header Slot */}
       <div className="flex items-center justify-between p-6 border-b border-white/10 bg-slate-900">
         <h2 className="text-2xl font-bold tracking-tight">Current Order</h2>
@@ -73,7 +73,7 @@ export default function SalesDashboard({ cart, onCartUpdate, onOpenScanner, onMa
       </div>
 
       {/* Footer Slot */}
-      <div className="border-t border-white/10 bg-slate-900 p-6 pb-24">
+      <div className="border-t border-white/10 bg-slate-900 p-6">
         <div className="flex flex-col gap-4 max-w-4xl mx-auto w-full">
           <div className="flex justify-between items-end mb-2">
             <span className="text-lg text-slate-400">Grand Total</span>
@@ -93,7 +93,7 @@ export default function SalesDashboard({ cart, onCartUpdate, onOpenScanner, onMa
       {/* Floating Action Button */}
       <button 
         onClick={onOpenScanner}
-        className="absolute bottom-36 right-6 flex items-center justify-center gap-2 rounded-full bg-blue-600 px-6 py-4 shadow-xl shadow-blue-900/30 active:bg-blue-700 transition-transform active:scale-95"
+        className="absolute bottom-[110px] right-6 z-50 flex items-center justify-center gap-2 rounded-full bg-blue-600 px-6 py-4 shadow-xl shadow-blue-900/30 active:bg-blue-700 transition-transform active:scale-95"
       >
         <Camera className="h-6 w-6 text-white" />
         <span className="font-bold text-white text-lg">Scan Item</span>

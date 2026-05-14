@@ -29,13 +29,13 @@ export function seedMockDatabase() {
 
   // Adding the requested ones for scanning to work:
   inventory.push({
-    id: "FRAME-RB2140",
-    qrCode: "FRAME-RB2140",
-    name: "Ray-Ban Wayfarer",
-    brand: "Ray-Ban",
-    category: "FRAME",
+    id: 'FRAME-RB2140',
+    qrCode: 'FRAME-RB2140',
+    name: 'Ray-Ban Wayfarer (TEST)',
+    category: 'FRAME',
+    brand: 'Ray-Ban',
     price: 150.00,
-    stock: 5,
+    stock: 10
   });
 
   // Seed Lenses (1,000)
@@ -56,13 +56,13 @@ export function seedMockDatabase() {
   }
 
   inventory.push({
-    id: "LENS-SV-200",
-    qrCode: "LENS-SV-200",
-    name: "Single Vision Lens (-2.00 SPH)",
-    brand: "Essilor", // generic default
-    category: "LENS",
+    id: 'LENS-SV-200',
+    qrCode: 'LENS-SV-200',
+    name: 'Single Vision -2.00 (TEST)',
+    category: 'LENS',
+    brand: 'Zeiss',
     price: 80.00,
-    stock: 10,
+    stock: 10
   });
 
   // Seed Past Sales (50) over the last 7 days

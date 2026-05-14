@@ -90,7 +90,7 @@ export default function AnalyticsDashboard({ inventory, completedSales }: Analyt
   }, [inventory, completedSales]);
 
   return (
-    <div className="flex h-full w-full flex-col bg-slate-950 text-white overflow-y-auto pb-24">
+    <div className="flex h-full w-full flex-col bg-slate-950 text-white overflow-y-auto pb-[100px] z-[1]">
       {/* Header Slot */}
       <div className="flex items-center justify-between p-6 border-b border-white/10 bg-slate-900 sticky top-0 z-10">
         <h2 className="text-2xl font-bold tracking-tight">Analytics Dashboard</h2>
