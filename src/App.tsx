@@ -40,10 +40,20 @@ export default function App() {
             item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
           );
         } else {
-          return [...prevCart, { ...product, quantity: 1 }];
+          return [{ ...product, quantity: 1 }, ...prevCart];
         }
       });
+      setActiveTab('POS');
       setIsScannerOpen(false);
+      setTimeout(() => {
+        const dashboardBody = document.getElementById('sales-dashboard-body');
+        if (dashboardBody) {
+          dashboardBody.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }, 50);
+      
       return true;
     } else {
       setToastMessage(`QR Code [${decodedText}] not found in Inventory!`);
@@ -103,7 +113,24 @@ export default function App() {
     <div className="relative flex min-h-[100dvh] w-full flex-col overflow-hidden bg-gradient-to-br from-black via-[#0a0514] to-black text-white">
       {/* Top Navbar */}
       <div className="flex items-center justify-between p-6 border-b border-white/10 bg-transparent shrink-0">
-        <h1 className="text-xl font-bold tracking-tight text-white">Sungmo Eyeware</h1>
+        <div className="flex items-center gap-3">
+          <svg width="60" height="30" viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <path id="curve" d="M 4 28 A 21 21 0 0 1 46 28" fill="none"/>
+            </defs>
+            <text fontSize="7" fontWeight="bold" letterSpacing="0.05em" fill="#c05634">
+              <textPath href="#curve" startOffset="50%" textAnchor="middle">SM OPTICAL SHOP</textPath>
+            </text>
+            <path d="M 13 32 A 12 12 0 1 0 37 32 A 12 12 0 1 0 13 32" fill="none" stroke="#c05634" strokeWidth="5"/>
+            <path d="M 63 32 A 12 12 0 1 0 87 32 A 12 12 0 1 0 63 32" fill="none" stroke="#c05634" strokeWidth="5"/>
+            <path d="M 37 28 Q 50 22 63 28" fill="none" stroke="#c05634" strokeWidth="5"/>
+            <path d="M 13 28 L 5 28" fill="none" stroke="#c05634" strokeWidth="5" strokeLinecap="square"/>
+            <path d="M 87 28 L 95 28" fill="none" stroke="#c05634" strokeWidth="5" strokeLinecap="square"/>
+          </svg>
+          <div className="flex flex-col">
+            <span className="text-lg font-bold tracking-tight text-[#c05634] leading-tight">SM 안경원</span>
+          </div>
+        </div>
         
         {/* iOS Segmented Control */}
         <div className="flex items-center bg-white/10 backdrop-blur-md rounded-full p-1 border border-white/10">

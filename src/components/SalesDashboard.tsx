@@ -33,7 +33,7 @@ export default function SalesDashboard({ cart, onCartUpdate, onOpenScanner, onMa
       </div>
 
       {/* Scrollable Body Slot */}
-      <div className="flex-1 overflow-y-auto p-4 sm:p-6 pb-2">
+      <div id="sales-dashboard-body" className="flex-1 overflow-y-auto p-4 sm:p-6 pb-2">
         {cart.length > 0 ? (
           <ul className="flex flex-col gap-4">
             {cart.map((item) => (
