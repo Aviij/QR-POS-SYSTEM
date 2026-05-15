@@ -125,7 +125,7 @@ export default function AnalyticsDashboard({ inventory, completedSales }: Analyt
   }, [activeModal, todaySalesItems]);
 
   return (
-    <div className="flex h-full w-full flex-col bg-transparent text-white overflow-y-auto pb-[100px] z-[1]">
+    <div className="flex h-full w-full flex-col bg-transparent text-white overflow-y-auto pb-[120px] z-[1]">
       {/* Header Slot */}
       <div className="flex items-center justify-between p-6 border-b border-white/10 bg-transparent sticky top-0 z-10 backdrop-blur-xl">
         <h2 className="text-2xl font-bold tracking-tight">Analytics Dashboard</h2>

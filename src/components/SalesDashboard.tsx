@@ -23,7 +23,7 @@ export default function SalesDashboard({ cart, onCartUpdate, onOpenScanner, onMa
   };
 
   return (
-    <div className="flex h-full w-full flex-col bg-transparent text-white relative z-[1]">
+    <div className="flex h-full w-full flex-col bg-transparent text-white relative z-[1] pb-[120px]">
       {/* Header Slot */}
       <div className="flex items-center justify-between p-6 border-b border-white/10 bg-transparent">
         <h2 className="text-2xl font-bold tracking-tight">Current Order</h2>
@@ -73,20 +73,12 @@ export default function SalesDashboard({ cart, onCartUpdate, onOpenScanner, onMa
       </div>
 
       {/* Footer Slot */}
-      <div className="border-t border-white/10 bg-black/40 backdrop-blur-md p-4 sm:p-6 pb-[100px] shrink-0 z-10 w-full relative">
+      <div className="border-t border-white/10 bg-black/40 backdrop-blur-md p-4 sm:p-6 shrink-0 z-10 w-full relative">
         <div className="flex flex-col gap-4 max-w-4xl mx-auto w-full">
           <div className="flex justify-between items-end mb-1">
             <span className="text-lg text-slate-400">Grand Total</span>
             <span className="text-3xl font-bold text-green-400">${grandTotal.toFixed(2)}</span>
           </div>
-          
-          <button 
-            onClick={onOpenScanner}
-            className="flex h-[72px] w-[80%] mx-auto items-center justify-center gap-3 bg-white/10 backdrop-blur-xl border border-white/20 shadow-[0_4px_30px_rgba(0,0,0,0.1)] rounded-3xl text-white text-xl font-bold tracking-wide transition-transform active:scale-95"
-          >
-            <Camera className="h-7 w-7 text-white" />
-            <span>Scan Item</span>
-          </button>
 
           <button 
             disabled={cart.length === 0}

@@ -10,7 +10,7 @@ import AnalyticsDashboard from './components/AnalyticsDashboard';
 import { CartItem, Product, Transaction } from './types';
 import { seedMockDatabase } from './utils/seeder';
 import { v4 as uuidv4 } from 'uuid';
-import { ShoppingCart, BarChart3 } from 'lucide-react';
+import { Camera } from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<'POS' | 'DASHBOARD'>('POS');
@@ -101,6 +101,27 @@ export default function App() {
 
   return (
     <div className="relative flex min-h-[100dvh] w-full flex-col overflow-hidden bg-gradient-to-br from-black via-[#0a0514] to-black text-white">
+      {/* Top Navbar */}
+      <div className="flex items-center justify-between p-6 border-b border-white/10 bg-transparent shrink-0">
+        <h1 className="text-xl font-bold tracking-tight text-white">Sungmo Eyeware</h1>
+        
+        {/* iOS Segmented Control */}
+        <div className="flex items-center bg-white/10 backdrop-blur-md rounded-full p-1 border border-white/10">
+          <button 
+            onClick={() => setActiveTab('POS')}
+            className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${activeTab === 'POS' ? 'bg-white/20 text-white shadow' : 'text-slate-400 hover:text-white'}`}
+          >
+            POS
+          </button>
+          <button 
+            onClick={() => setActiveTab('DASHBOARD')}
+            className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${activeTab === 'DASHBOARD' ? 'bg-white/20 text-white shadow' : 'text-slate-400 hover:text-white'}`}
+          >
+            Dashboard
+          </button>
+        </div>
+      </div>
+
       <div className="flex-1 overflow-hidden"> 
         {activeTab === 'POS' ? (
           <SalesDashboard 
@@ -131,21 +152,14 @@ export default function App() {
         </div>
       )}
 
-      {/* Bottom Tab Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 flex h-[80px] w-full items-center justify-around border-t border-white/10 bg-transparent backdrop-blur-xl pb-safe">
+      {/* Fixed Bottom Scan Area */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 p-5 pb-safe">
         <button 
-          onClick={() => setActiveTab('POS')}
-          className={`flex flex-col items-center justify-center w-full h-full gap-1 ${activeTab === 'POS' ? 'text-blue-400' : 'text-slate-400'}`}
+          onClick={() => setIsScannerOpen(true)}
+          className="flex h-[72px] w-full items-center justify-center gap-3 bg-white/10 backdrop-blur-xl border border-white/20 shadow-[0_4px_30px_rgba(0,0,0,0.1)] rounded-3xl text-white text-xl font-bold tracking-wide transition-transform active:scale-95"
         >
-          <ShoppingCart className="h-6 w-6" />
-          <span className="text-xs font-semibold">POS</span>
-        </button>
-        <button 
-          onClick={() => setActiveTab('DASHBOARD')}
-          className={`flex flex-col items-center justify-center w-full h-full gap-1 ${activeTab === 'DASHBOARD' ? 'text-blue-400' : 'text-slate-400'}`}
-        >
-          <BarChart3 className="h-6 w-6" />
-          <span className="text-xs font-semibold">Dashboard</span>
+          <Camera className="h-7 w-7 text-white" />
+          <span>Scan Item</span>
         </button>
       </div>
     </div>
