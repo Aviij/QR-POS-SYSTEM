@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "qr-pos-system"
-  }
+    "default": "qr-pos-system",
+    "production": "qr-pos-system"
+  },
+  "targets": {},
+  "etags": {}
 }

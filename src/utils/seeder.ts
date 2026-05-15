@@ -12,6 +12,15 @@ export function seedMockDatabase() {
   const inventory: Product[] = [];
   const completedSales: Transaction[] = [];
 
+  // Hardcoded Test Inventory
+  inventory.push(
+    { id: 'TEST-F-RAYBAN', qrCode: 'TEST-F-RAYBAN', name: 'Ray-Ban Aviator', category: 'FRAME', brand: 'Ray-Ban', price: 180.0, stock: 10 },
+    { id: 'TEST-F-OAKLEY', qrCode: 'TEST-F-OAKLEY', name: 'Oakley Holbrook', category: 'FRAME', brand: 'Oakley', price: 150.0, stock: 15 },
+    { id: 'TEST-F-GUCCI', qrCode: 'TEST-F-GUCCI', name: 'Gucci Round', category: 'FRAME', brand: 'Gucci', price: 350.0, stock: 5 },
+    { id: 'TEST-L-ZEISS', qrCode: 'TEST-L-ZEISS', name: 'Zeiss SV -2.00', category: 'LENS', brand: 'Zeiss', price: 120.0, stock: 50 },
+    { id: 'TEST-L-HOYA', qrCode: 'TEST-L-HOYA', name: 'Hoya Prog +1.50', category: 'LENS', brand: 'Hoya', price: 200.0, stock: 30 }
+  );
+
   // Seed Frames (1,000)
   for (let i = 0; i < 1000; i++) {
     const brand = FRAME_BRANDS[randomInt(0, FRAME_BRANDS.length - 1)];
@@ -68,7 +77,7 @@ export function seedMockDatabase() {
   // Seed Past Sales (50) over the last 7 days
   const now = new Date();
   for (let i = 0; i < 50; i++) {
-    const daysAgo = randomInt(0, 6);
+    const daysAgo = randomInt(1, 7);
     const date = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
     // Add some random time to scatter it
     date.setHours(randomInt(9, 18), randomInt(0, 59), randomInt(0, 59));

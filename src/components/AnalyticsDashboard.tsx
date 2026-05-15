@@ -3,7 +3,7 @@ import { Product, Transaction } from '../types';
 import { 
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, 
   PieChart, Pie, Cell, Legend,
-  BarChart, Bar
+  BarChart, Bar, LabelList
 } from 'recharts';
 import { Glasses, CircleDashed } from 'lucide-react';
 
@@ -197,7 +197,9 @@ export default function AnalyticsDashboard({ inventory, completedSales }: Analyt
                   cursor={{fill: 'rgba(255,255,255,0.05)'}}
                   contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '8px' }}
                 />
-                <Bar dataKey="stock" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="stock" fill="#3b82f6" radius={[4, 4, 0, 0]}>
+                  <LabelList dataKey="stock" position="top" fill="#94a3b8" fontSize={12} />
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
