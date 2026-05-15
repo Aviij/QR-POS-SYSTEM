@@ -12,8 +12,11 @@ import { seedMockDatabase } from './utils/seeder';
 import { v4 as uuidv4 } from 'uuid';
 import { Camera } from 'lucide-react';
 
+export type Language = 'EN' | 'KO';
+
 export default function App() {
   const [activeTab, setActiveTab] = useState<'POS' | 'DASHBOARD'>('POS');
+  const [language, setLanguage] = useState<Language>('KO');
   const [cart, setCart] = useState<CartItem[]>([]);
   const [inventory, setInventory] = useState<Product[]>([]);
   const [completedSales, setCompletedSales] = useState<Transaction[]>([]);
@@ -56,7 +59,7 @@ export default function App() {
       
       return true;
     } else {
-      setToastMessage(`QR Code [${decodedText}] not found in Inventory!`);
+      setToastMessage(language === 'KO' ? `[${decodedText}] 항목을 재고에서 찾을 수 없습니다!` : `QR Code [${decodedText}] not found in Inventory!`);
       try {
         const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
         if (AudioContext) {
@@ -105,7 +108,7 @@ export default function App() {
 
     // Clear cart and show toast
     setCart([]);
-    setToastMessage('Payment Successful!');
+    setToastMessage(language === 'KO' ? '결제 완료!' : 'Payment Successful!');
     setTimeout(() => setToastMessage(null), 3000);
   };
 
@@ -118,34 +121,43 @@ export default function App() {
             <defs>
               <path id="curve" d="M 4 28 A 21 21 0 0 1 46 28" fill="none"/>
             </defs>
-            <text fontSize="7" fontWeight="bold" letterSpacing="0.05em" fill="#c05634">
+            <text fontSize="7" fontWeight="bold" letterSpacing="0.05em" fill="#8b5cf6">
               <textPath href="#curve" startOffset="50%" textAnchor="middle">SM OPTICAL SHOP</textPath>
             </text>
-            <path d="M 13 32 A 12 12 0 1 0 37 32 A 12 12 0 1 0 13 32" fill="none" stroke="#c05634" strokeWidth="5"/>
-            <path d="M 63 32 A 12 12 0 1 0 87 32 A 12 12 0 1 0 63 32" fill="none" stroke="#c05634" strokeWidth="5"/>
-            <path d="M 37 28 Q 50 22 63 28" fill="none" stroke="#c05634" strokeWidth="5"/>
-            <path d="M 13 28 L 5 28" fill="none" stroke="#c05634" strokeWidth="5" strokeLinecap="square"/>
-            <path d="M 87 28 L 95 28" fill="none" stroke="#c05634" strokeWidth="5" strokeLinecap="square"/>
+            <path d="M 13 32 A 12 12 0 1 0 37 32 A 12 12 0 1 0 13 32" fill="none" stroke="#8b5cf6" strokeWidth="5"/>
+            <path d="M 63 32 A 12 12 0 1 0 87 32 A 12 12 0 1 0 63 32" fill="none" stroke="#8b5cf6" strokeWidth="5"/>
+            <path d="M 37 28 Q 50 22 63 28" fill="none" stroke="#8b5cf6" strokeWidth="5"/>
+            <path d="M 13 28 L 5 28" fill="none" stroke="#8b5cf6" strokeWidth="5" strokeLinecap="square"/>
+            <path d="M 87 28 L 95 28" fill="none" stroke="#8b5cf6" strokeWidth="5" strokeLinecap="square"/>
           </svg>
           <div className="flex flex-col">
-            <span className="text-lg font-bold tracking-tight text-[#c05634] leading-tight">SM 안경원</span>
+            <span className="text-lg font-bold tracking-tight text-[#8b5cf6] leading-tight">SM 안경원</span>
           </div>
         </div>
         
-        {/* iOS Segmented Control */}
-        <div className="flex items-center bg-white/10 backdrop-blur-md rounded-full p-1 border border-white/10">
+        <div className="flex items-center gap-3">
+          {/* Language Toggle */}
           <button 
-            onClick={() => setActiveTab('POS')}
-            className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${activeTab === 'POS' ? 'bg-white/20 text-white shadow' : 'text-slate-400 hover:text-white'}`}
+            onClick={() => setLanguage(l => l === 'EN' ? 'KO' : 'EN')}
+            className="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 border border-white/20 text-sm font-bold shadow-sm active:scale-95 transition-transform"
           >
-            POS
+            {language}
           </button>
-          <button 
-            onClick={() => setActiveTab('DASHBOARD')}
-            className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${activeTab === 'DASHBOARD' ? 'bg-white/20 text-white shadow' : 'text-slate-400 hover:text-white'}`}
-          >
-            Dashboard
-          </button>
+          {/* iOS Segmented Control */}
+          <div className="flex items-center bg-white/10 backdrop-blur-md rounded-full p-1 border border-white/10">
+            <button 
+              onClick={() => setActiveTab('POS')}
+              className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${activeTab === 'POS' ? 'bg-white/20 text-white shadow' : 'text-slate-400 hover:text-white'}`}
+            >
+              POS
+            </button>
+            <button 
+              onClick={() => setActiveTab('DASHBOARD')}
+              className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${activeTab === 'DASHBOARD' ? 'bg-white/20 text-white shadow' : 'text-slate-400 hover:text-white'}`}
+            >
+              {language === 'KO' ? '대시보드' : 'Dashboard'}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -156,11 +168,13 @@ export default function App() {
             onCartUpdate={setCart}
             onOpenScanner={() => setIsScannerOpen(true)} 
             onMarkAsPaid={handleMarkAsPaid}
+            language={language}
           />
         ) : (
           <AnalyticsDashboard 
             inventory={inventory} 
             completedSales={completedSales} 
+            language={language}
           />
         )}
       </div>
@@ -169,12 +183,13 @@ export default function App() {
         <ScannerModal 
           onClose={() => setIsScannerOpen(false)} 
           onScanSuccess={handleScanSuccess} 
+          language={language}
         />
       )}
 
       {/* Toast Notification */}
       {toastMessage && (
-        <div className={`absolute top-8 left-1/2 -translate-x-1/2 z-[200] rounded-full px-6 py-3 shadow-lg ${toastMessage === 'Payment Successful!' ? 'bg-green-500 shadow-green-500/20' : 'bg-red-500 shadow-red-500/20'}`}>
+        <div className={`absolute top-8 left-1/2 -translate-x-1/2 z-[200] rounded-full px-6 py-3 shadow-lg ${toastMessage.includes('!') || toastMessage.includes('QR') ? 'bg-red-500 shadow-red-500/20' : 'bg-green-500 shadow-green-500/20'}`}>
           <p className="text-white font-semibold">{toastMessage}</p>
         </div>
       )}
@@ -186,7 +201,7 @@ export default function App() {
           className="flex h-[72px] w-full items-center justify-center gap-3 bg-white/10 backdrop-blur-xl border border-white/20 shadow-[0_4px_30px_rgba(0,0,0,0.1)] rounded-3xl text-white text-xl font-bold tracking-wide transition-transform active:scale-95"
         >
           <Camera className="h-7 w-7 text-white" />
-          <span>Scan Item</span>
+          <span>{language === 'KO' ? '상품 스캔' : 'Scan Item'}</span>
         </button>
       </div>
     </div>

@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
 import { X } from 'lucide-react';
+import { Language } from '../App';
 
 interface ScannerModalProps {
   onClose: () => void;
   onScanSuccess: (decodedText: string) => boolean;
+  language?: Language;
 }
 
-export default function ScannerModal({ onClose, onScanSuccess }: ScannerModalProps) {
+export default function ScannerModal({ onClose, onScanSuccess, language = 'EN' }: ScannerModalProps) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -88,7 +90,9 @@ export default function ScannerModal({ onClose, onScanSuccess }: ScannerModalPro
       <div className="relative flex-1 flex flex-col items-center justify-center overflow-hidden">
         {error ? (
           <div className="p-6 text-center text-white z-20">
-            <p className="mb-2 text-xl font-semibold text-red-500">Camera Error</p>
+            <p className="mb-2 text-xl font-semibold text-red-500">
+              {language === 'KO' ? '카메라 오류' : 'Camera Error'}
+            </p>
             <p className="text-gray-300">{error}</p>
           </div>
         ) : (
@@ -100,10 +104,10 @@ export default function ScannerModal({ onClose, onScanSuccess }: ScannerModalPro
             {/* Targeting Square Overlay */}
             <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center overflow-hidden">
               <div className="pointer-events-none relative h-[250px] w-[250px] shadow-[0_0_0_4000px_rgba(0,0,0,0.6)] rounded-2xl">
-                <div className="absolute top-0 left-0 h-8 w-8 border-t-4 border-l-4 border-green-400 rounded-tl-xl -translate-x-[2px] -translate-y-[2px]"></div>
-                <div className="absolute top-0 right-0 h-8 w-8 border-t-4 border-r-4 border-green-400 rounded-tr-xl translate-x-[2px] -translate-y-[2px]"></div>
-                <div className="absolute bottom-0 left-0 h-8 w-8 border-b-4 border-l-4 border-green-400 rounded-bl-xl -translate-x-[2px] translate-y-[2px]"></div>
-                <div className="absolute bottom-0 right-0 h-8 w-8 border-b-4 border-r-4 border-green-400 rounded-br-xl translate-x-[2px] translate-y-[2px]"></div>
+                <div className="absolute top-0 left-0 h-8 w-8 border-t-4 border-l-4 border-[#8b5cf6] rounded-tl-xl -translate-x-[2px] -translate-y-[2px]"></div>
+                <div className="absolute top-0 right-0 h-8 w-8 border-t-4 border-r-4 border-[#8b5cf6] rounded-tr-xl translate-x-[2px] -translate-y-[2px]"></div>
+                <div className="absolute bottom-0 left-0 h-8 w-8 border-b-4 border-l-4 border-[#8b5cf6] rounded-bl-xl -translate-x-[2px] translate-y-[2px]"></div>
+                <div className="absolute bottom-0 right-0 h-8 w-8 border-b-4 border-r-4 border-[#8b5cf6] rounded-br-xl translate-x-[2px] translate-y-[2px]"></div>
               </div>
             </div>
           </>
