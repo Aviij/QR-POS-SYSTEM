@@ -18,9 +18,7 @@ export default function ScannerModal({ onClose, onScanSuccess }: ScannerModalPro
       try {
         await html5QrCode.start(
           { 
-            facingMode: "environment",
-            width: { ideal: 1920 },
-            height: { ideal: 1080 } 
+            facingMode: "environment"
           },
           {
             fps: 10,
@@ -49,7 +47,9 @@ export default function ScannerModal({ onClose, onScanSuccess }: ScannerModalPro
         );
       } catch (err) {
         console.error("Scanner Error:", err);
-        setError("Failed to start scanner. Please ensure camera permissions are granted in settings.");
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        setError("Failed to start scanner: " + errorMessage);
+        alert("Camera Error: " + errorMessage);
       }
     };
 
@@ -99,7 +99,7 @@ export default function ScannerModal({ onClose, onScanSuccess }: ScannerModalPro
             />
             {/* Targeting Square Overlay */}
             <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center overflow-hidden">
-              <div className="relative h-[250px] w-[250px] shadow-[0_0_0_4000px_rgba(0,0,0,0.6)] rounded-2xl">
+              <div className="pointer-events-none relative h-[250px] w-[250px] shadow-[0_0_0_4000px_rgba(0,0,0,0.6)] rounded-2xl">
                 <div className="absolute top-0 left-0 h-8 w-8 border-t-4 border-l-4 border-green-400 rounded-tl-xl -translate-x-[2px] -translate-y-[2px]"></div>
                 <div className="absolute top-0 right-0 h-8 w-8 border-t-4 border-r-4 border-green-400 rounded-tr-xl translate-x-[2px] -translate-y-[2px]"></div>
                 <div className="absolute bottom-0 left-0 h-8 w-8 border-b-4 border-l-4 border-green-400 rounded-bl-xl -translate-x-[2px] translate-y-[2px]"></div>
