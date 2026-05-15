@@ -3,6 +3,14 @@
     "default": "qr-pos-system",
     "production": "qr-pos-system"
   },
-  "targets": {},
+  "targets": {
+    "qr-pos-system": {
+      "hosting": {
+        "main": [
+          "qr-pos-system"
+        ]
+      }
+    }
+  },
   "etags": {}
 }

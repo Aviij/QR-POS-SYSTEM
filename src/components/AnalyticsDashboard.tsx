@@ -1,29 +1,30 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Product, Transaction } from '../types';
 import { 
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, 
-  PieChart, Pie, Cell, Legend,
-  BarChart, Bar, LabelList
+  PieChart, Pie, Cell, Legend
 } from 'recharts';
-import { Glasses, CircleDashed } from 'lucide-react';
+import { Glasses, CircleDashed, X } from 'lucide-react';
 
 interface AnalyticsDashboardProps {
   inventory: Product[];
   completedSales: Transaction[];
 }
 
-const COLORS = ['#3b82f6', '#8b5cf6', '#ec4899', '#f43f5e', '#f59e0b', '#10b981', '#14b8a6'];
+const COLORS = ['#6366f1', '#8b5cf6', '#d946ef', '#3b82f6', '#0ea5e9', '#64748b'];
 
 export default function AnalyticsDashboard({ inventory, completedSales }: AnalyticsDashboardProps) {
+  const [activeModal, setActiveModal] = useState<'FRAMES' | 'LENSES' | null>(null);
 
   // Process KPIs
-  const { todaySalesTotal, todayFramesSold, todayLensesSold, dailySalesTrend, salesByBrand, inventoryByBrand } = useMemo(() => {
+  const { todaySalesTotal, todayFramesSold, todayLensesSold, todaySalesItems, dailySalesTrend, salesByBrand, inventoryByBrand } = useMemo(() => {
     const now = new Date();
     const todayStr = now.toISOString().split('T')[0];
     
     let todayTotal = 0;
     let framesSold = 0;
     let lensesSold = 0;
+    const salesItems: { id: string; name: string; time: string; price: number; category: string }[] = [];
     
     // For last 7 days trend
     const last7Days: Record<string, number> = {};
@@ -41,9 +42,21 @@ export default function AnalyticsDashboard({ inventory, completedSales }: Analyt
       // Keep track of today
       if (saleDateStr === todayStr) {
         todayTotal += sale.total;
+        const timeStr = new Date(sale.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        
         sale.items.forEach(item => {
           if (item.category === 'FRAME') framesSold += item.quantity;
           if (item.category === 'LENS') lensesSold += item.quantity;
+          
+          for(let i=0; i<item.quantity; i++) {
+             salesItems.push({
+                id: `${sale.id}-${item.id}-${i}`,
+                name: item.name,
+                time: timeStr,
+                price: item.price,
+                category: item.category
+             });
+          }
         });
       }
       
@@ -75,30 +88,46 @@ export default function AnalyticsDashboard({ inventory, completedSales }: Analyt
 
     // Current Inventory Health
     const invByBrand: Record<string, number> = {};
+    let maxStock = 0;
     inventory.forEach(item => {
       if (!invByBrand[item.brand]) invByBrand[item.brand] = 0;
       invByBrand[item.brand] += item.stock;
     });
 
+    Object.values(invByBrand).forEach(stock => {
+      if (stock > maxStock) maxStock = stock;
+    });
+
     const barData = Object.keys(invByBrand).map(brand => ({
       name: brand,
-      stock: invByBrand[brand]
+      stock: invByBrand[brand],
+      percentage: maxStock > 0 ? (invByBrand[brand] / maxStock) * 100 : 0
     })).sort((a, b) => b.stock - a.stock);
 
     return { 
       todaySalesTotal: todayTotal, 
       todayFramesSold: framesSold,
       todayLensesSold: lensesSold,
+      todaySalesItems: salesItems,
       dailySalesTrend: trendData,
       salesByBrand: pieData,
       inventoryByBrand: barData
     };
   }, [inventory, completedSales]);
 
+  // Filter items for modal
+  const modalItems = useMemo(() => {
+    if (!activeModal) return [];
+    return todaySalesItems.filter(item => 
+      (activeModal === 'FRAMES' && item.category === 'FRAME') ||
+      (activeModal === 'LENSES' && item.category === 'LENS')
+    );
+  }, [activeModal, todaySalesItems]);
+
   return (
-    <div className="flex h-full w-full flex-col bg-slate-950 text-white overflow-y-auto pb-[100px] z-[1]">
+    <div className="flex h-full w-full flex-col bg-transparent text-white overflow-y-auto pb-[100px] z-[1]">
       {/* Header Slot */}
-      <div className="flex items-center justify-between p-6 border-b border-white/10 bg-slate-900 sticky top-0 z-10">
+      <div className="flex items-center justify-between p-6 border-b border-white/10 bg-transparent sticky top-0 z-10 backdrop-blur-xl">
         <h2 className="text-2xl font-bold tracking-tight">Analytics Dashboard</h2>
       </div>
 
@@ -112,25 +141,31 @@ export default function AnalyticsDashboard({ inventory, completedSales }: Analyt
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="flex flex-col rounded-2xl bg-white/5 border border-white/10 p-5 shadow-sm backdrop-blur-md">
+            <button 
+              onClick={() => setActiveModal('FRAMES')} 
+              className="flex flex-col rounded-2xl bg-white/5 border border-white/10 p-5 shadow-sm backdrop-blur-md text-left transition-transform active:scale-95"
+            >
               <div className="flex items-center gap-2 mb-2">
                 <Glasses className="h-5 w-5 text-indigo-400" />
                 <span className="text-sm font-medium text-slate-400">Frames Sold</span>
               </div>
               <span className="text-2xl font-bold text-indigo-400">{todayFramesSold}</span>
-            </div>
-            <div className="flex flex-col rounded-2xl bg-white/5 border border-white/10 p-5 shadow-sm backdrop-blur-md">
+            </button>
+            <button 
+              onClick={() => setActiveModal('LENSES')}
+              className="flex flex-col rounded-2xl bg-white/5 border border-white/10 p-5 shadow-sm backdrop-blur-md text-left transition-transform active:scale-95"
+            >
               <div className="flex items-center gap-2 mb-2">
                 <CircleDashed className="h-5 w-5 text-emerald-400" />
                 <span className="text-sm font-medium text-slate-400">Lenses Sold</span>
               </div>
               <span className="text-2xl font-bold text-emerald-400">{todayLensesSold}</span>
-            </div>
+            </button>
           </div>
         </div>
 
         {/* Daily Sales Trend */}
-        <div className="flex flex-col rounded-2xl bg-slate-900 border border-slate-800 p-5 shadow-sm">
+        <div className="flex flex-col rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md p-5 shadow-[0_4px_30px_rgba(0,0,0,0.1)]">
           <h3 className="text-lg font-semibold text-slate-200 mb-4">7-Day Sales Trend</h3>
           <div className="h-[250px] w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -155,7 +190,7 @@ export default function AnalyticsDashboard({ inventory, completedSales }: Analyt
         </div>
 
         {/* Sales by Brand */}
-        <div className="flex flex-col rounded-2xl bg-slate-900 border border-slate-800 p-5 shadow-sm">
+        <div className="flex flex-col rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md p-5 shadow-[0_4px_30px_rgba(0,0,0,0.1)]">
           <h3 className="text-lg font-semibold text-slate-200 mb-4">Revenue by Brand</h3>
           <div className="h-[250px] w-full flex items-center justify-center">
              <ResponsiveContainer width="100%" height="100%">
@@ -186,26 +221,63 @@ export default function AnalyticsDashboard({ inventory, completedSales }: Analyt
         </div>
 
         {/* Inventory Health */}
-        <div className="flex flex-col rounded-2xl bg-slate-900 border border-slate-800 p-5 shadow-sm">
-          <h3 className="text-lg font-semibold text-slate-200 mb-4">Current Inventory by Brand</h3>
-          <div className="h-[250px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={inventoryByBrand} margin={{ top: 5, right: 0, left: -20, bottom: 0 }}>
-                <XAxis dataKey="name" stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
-                <Tooltip 
-                  cursor={{fill: 'rgba(255,255,255,0.05)'}}
-                  contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '8px' }}
-                />
-                <Bar dataKey="stock" fill="#3b82f6" radius={[4, 4, 0, 0]}>
-                  <LabelList dataKey="stock" position="top" fill="#94a3b8" fontSize={12} />
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+        <div className="flex flex-col rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md p-5 shadow-[0_4px_30px_rgba(0,0,0,0.1)]">
+          <h3 className="text-lg font-semibold text-slate-200 mb-6">Current Inventory by Brand</h3>
+          <div className="flex flex-col gap-5 w-full">
+            {inventoryByBrand.map((item) => (
+              <div key={item.name} className="flex flex-col gap-2">
+                <div className="flex justify-between items-end">
+                  <span className="font-semibold text-slate-200">{item.name}</span>
+                  <span className="text-sm font-medium text-slate-400">{item.stock.toLocaleString()}</span>
+                </div>
+                <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full" 
+                    style={{ width: `${item.percentage}%` }}
+                  />
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
       </div>
+
+      {/* Drill-down Modal */}
+      {activeModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="w-full max-w-md max-h-[80vh] flex flex-col bg-white/10 backdrop-blur-2xl border border-white/20 shadow-[0_4px_30px_rgba(0,0,0,0.3)] rounded-3xl overflow-hidden">
+            <div className="flex items-center justify-between p-5 border-b border-white/10">
+              <h3 className="text-xl font-bold text-white">
+                {activeModal === 'FRAMES' ? 'Frames Sold Today' : 'Lenses Sold Today'}
+              </h3>
+              <button 
+                onClick={() => setActiveModal(null)}
+                className="flex items-center justify-center p-2 rounded-full bg-white/10 text-white active:bg-white/20 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-3">
+              {modalItems.length > 0 ? (
+                modalItems.map(item => (
+                  <div key={item.id} className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/10">
+                    <div className="flex flex-col">
+                      <span className="font-semibold text-white">{item.name}</span>
+                      <span className="text-xs text-slate-400 mt-1">{item.time}</span>
+                    </div>
+                    <span className="font-bold text-white text-lg">${item.price.toFixed(2)}</span>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-10 text-slate-400">
+                  <p>No items sold yet today.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

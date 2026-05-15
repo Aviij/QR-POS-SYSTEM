@@ -100,7 +100,7 @@ export default function App() {
   };
 
   return (
-    <div className="relative flex min-h-[100dvh] w-full flex-col overflow-hidden bg-slate-950">
+    <div className="relative flex min-h-[100dvh] w-full flex-col overflow-hidden bg-gradient-to-br from-black via-[#0a0514] to-black text-white">
       <div className="flex-1 overflow-hidden"> 
         {activeTab === 'POS' ? (
           <SalesDashboard 
@@ -132,7 +132,7 @@ export default function App() {
       )}
 
       {/* Bottom Tab Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 flex h-[80px] w-full items-center justify-around border-t border-white/10 bg-slate-900/80 backdrop-blur-xl supports-[backdrop-filter]:bg-slate-950/60 pb-safe">
+      <div className="fixed bottom-0 left-0 right-0 z-40 flex h-[80px] w-full items-center justify-around border-t border-white/10 bg-transparent backdrop-blur-xl pb-safe">
         <button 
           onClick={() => setActiveTab('POS')}
           className={`flex flex-col items-center justify-center w-full h-full gap-1 ${activeTab === 'POS' ? 'text-blue-400' : 'text-slate-400'}`}
